@@ -70,15 +70,16 @@ guess = Guess()
 still_playing = True
 HOST = ''
 
-message = "GUESS:" + guess.new()
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((HOST, PORT_IN))  
 
+message = "GUESS:" + guess.new()
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.sendto(message, (HOST, PORT_OUT))
 
+x=0
 while (still_playing):
-
+  x+=1
   data, addr = sock.recvfrom(1024)
   print "Received Message:" + data
 
@@ -93,6 +94,8 @@ while (still_playing):
     else:
       print "Your opponent received x Bulls and y Cows: " + response
       s.sendto(response, (HOST, PORT_OUT))
+      message = "GUESS:" + guess.new()
+      s.sendto(message, (HOST, PORT_OUT))
   elif("WIN" in data):
     print "YOU WIN"
     still_playing = False

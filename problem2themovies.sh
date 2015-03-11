@@ -6,21 +6,13 @@
 while true
 do
   curl https://web.archive.org/web/20140301052344/http://www.movies.com/rss-feeds/top-ten-box-office-rss > problem2_toremove_movies.txt
-  # extract titles
-  cat problem2_toremove_movies.txt | grep '<title>' > problem2_toremove_titles.txt
-  # extract description
-  cat problem2_toremove_movies.txt | grep '<description>' > problem2_toremove_descriptions.txt
-
-  # clean up titles
-  # delete <title><![CDATA[ ______ ]]></title>
-  cat problem2_toremove_titles.txt | sed 's/<title><!\[CDATA\[//g' | sed 's/\]\]><\/title>//g'
-
-  # clean up descriptions
-  cat problem2_toremove_descriptions.txt | sed 's/<description><!\[CDATA\[//g' | sed 's/\]\]><\/description>//g' > problem2_toremove_descriptions_2.txt
-
-  # create array
   IFS=$'\n'
-  array=($(cat problem2_toremove_descriptions_2.txt))
+  # extract titles
+  cat problem2_toremove_movies.txt | grep '<title>' | sed 's/<title><!\[CDATA\[//g' | sed 's/\]\]><\/title>//g'
+  # extract description and create array
+  array=($(cat problem2_toremove_movies.txt | grep '<description>' | sed 's/<description><!\[CDATA\[//g' | sed 's/\]\]><\/description>//g'))
+  # clean up
+  rm problem2_toremove*
 
   # user input
   read -p "Choose a movie (1-10) > " movie
@@ -32,8 +24,5 @@ do
     echo Synopsis
     echo ${array[$movie]}
   fi
-
-  # clean up
-  rm problem2_toremove*
 done
 

@@ -15,16 +15,9 @@ class BullsAndCows:
   def check_guess(self, guess):
     digits = '123456789'
     size = 4
-    # chosen = ''.join(random.sample(digits,size))
-    #print chosen # Debug
-    # print '''I have chosen a number from %s unique digits from 1 to 9 arranged in a random order.
-    # You need to input a %i digit, unique digit number as a guess at what I have chosen''' % (size, size)
-    # guesses = 0
     while True:
         self.guesses += 1
         while True:
-            # get a good guess
-            # guess = raw_input('\nNext guess [%i]: ' % guesses).strip()
             if len(guess) == size and \
                all(char in digits for char in guess) \
                and len(set(guess)) == size:
@@ -32,7 +25,6 @@ class BullsAndCows:
             print "Problem, try again. You need to enter %i unique digits from 1 to 9" % size
             return
         if guess == self.chosen:
-            print 'Congratulations you guessed correctly in',self.guesses,'attempts'
             response="WIN"
             return response
             # break
@@ -56,15 +48,16 @@ class Guess:
     size = 4
     guess = ''.join(random.sample(digits,size))
     if guess in self.past_guesses:
-      print 'RECURSION ++++++++++++++++++++++++++++++++++++++++++++++++++++++'
       return self.new()
     else:
       self.past_guesses.add(guess)
       return guess
 
 
-print "Starting Script"
+print "Starting Game"
 print '===================================='
+print ''
+print ''
 PORT = {}
 if (len(sys.argv) == 4):
   player_number = sys.argv[1]
@@ -91,34 +84,27 @@ s.sendto(message, (HOST, PORT_OUT))
 
 while (still_playing):
 
-  print "still_playing"
-
   data, addr = sock.recvfrom(1024)
-  print '******************************'
-  print "received message:", data
-  print '******************************'
+  print "Received Message:" + data
 
   if("GUESS" in data):
-    print "GUESS"
     index = data.index(":") + 1
     number = data[index:]
     response = game.check_guess(number)
     if("WIN" in response):
-      message = "WIN"
-      s.sendto(message, (HOST, PORT_OUT))
+      s.sendto(response, (HOST, PORT_OUT))
       print "YOU LOST. Goodbye."
       break
     else:
-      message = response
-      s.sendto(message, (HOST, PORT_OUT))
+      print "Your opponent received x Bulls and y Cows: " + response
+      s.sendto(response, (HOST, PORT_OUT))
   elif("WIN" in data):
     print "YOU WIN"
     still_playing = False
     break
   else:
-    print "xByC: " + data
+    print "Your guess recevied x Bulls and y Cows: " + data
     message = "GUESS:" + str(guess.new())
-    print "Message: " + message
+    print "  Next Guess: " + message
     s.sendto(message, (HOST, PORT_OUT))
-    print "Message Sent -------------------------"
 

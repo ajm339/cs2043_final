@@ -12,7 +12,7 @@ class BullsAndCows:
     self.chosen = chosen
     self.guesses = 0
 
-  def check_guess(guess):
+  def check_guess(self, guess):
     digits = '123456789'
     size = 4
     # chosen = ''.join(random.sample(digits,size))
@@ -42,7 +42,7 @@ class BullsAndCows:
             elif guess[i] in self.chosen:
                 cows += 1
         print '  %i Bulls\n  %i Cows' % (bulls, cows)
-        response = bulls.to_s + "B" + cows.to_s + "C"
+        response = str(bulls) + "B" + str(cows) + "C"
         return response
 
 class Guess:
@@ -50,41 +50,32 @@ class Guess:
   def __init__(self):
     self.past_guesses = Set([])
 
-  def new():
-    print self.past_guesses
+  def new(self):
     digits = '123456789'
     size = 4
     guess = ''.join(random.sample(digits,size))
-    print guess
     if guess in self.past_guesses:
-      print "if"
       self.new()
     else:
-      print "else"
       self.past_guesses.add(guess)
       return guess
 
-print "Start"
+
+print "Starting Script"
+print '=================='
 PORT = {}
 if (len(sys.argv) == 4):
   player_number = sys.argv[1]
   PORT['in'] = int(sys.argv[2])
   PORT['out'] = int(sys.argv[3])
 
-print player_number
-print PORT['in']
-print PORT['out']
 
 game = BullsAndCows(player_number)
 
-print game.check_guess(1245)
+print game.check_guess("1245")
 
 # guess = Guess()
 
-print game
-print guess
-print '========'
-# guess.new("Hello")
 
 # sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # still_playing = True

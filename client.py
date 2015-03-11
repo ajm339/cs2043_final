@@ -19,7 +19,7 @@
 import socket
 
 HOST = ""
-PORT = 5005
+PORT = 5006
 message = "WIN"
 
 print "HOST:", HOST

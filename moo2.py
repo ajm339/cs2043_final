@@ -30,8 +30,9 @@ class BullsAndCows:
                and len(set(guess)) == size:
                 break
             print "Problem, try again. You need to enter %i unique digits from 1 to 9" % size
+            return
         if guess == self.chosen:
-            print '\nCongratulations you guessed correctly in',self.guesses,'attempts'
+            print 'Congratulations you guessed correctly in',self.guesses,'attempts'
             response="WIN"
             return response
             # break
@@ -55,54 +56,69 @@ class Guess:
     size = 4
     guess = ''.join(random.sample(digits,size))
     if guess in self.past_guesses:
-      self.new()
+      print 'RECURSION ++++++++++++++++++++++++++++++++++++++++++++++++++++++'
+      return self.new()
     else:
       self.past_guesses.add(guess)
       return guess
 
 
 print "Starting Script"
-print '=================='
+print '===================================='
 PORT = {}
 if (len(sys.argv) == 4):
   player_number = sys.argv[1]
-  PORT['in'] = int(sys.argv[2])
-  PORT['out'] = int(sys.argv[3])
+  PORT_IN = int(sys.argv[2])
+  PORT_OUT = int(sys.argv[3])
 
 
 game = BullsAndCows(player_number)
-
-print game.check_guess("1245")
-
-# guess = Guess()
+guess = Guess()
 
 
-# sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-# still_playing = True
-# HOST = ''
 
-# message = "GUESS:" + guess.new()
-# sock.sendto(message, (HOST, PORT['out']))
+still_playing = True
+HOST = ''
 
-# while still_playing:
-#   print "still_playing"
-#   sock.bind((HOST, PORT['in']))  
 
-#   print "socket"
+message = "GUESS:" + guess.new()
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind((HOST, PORT_IN))  
 
-#   while still_playing:
-#     print "receiving"
-#     data, addr = sock.recvfrom(1024)
-#     print "received message:", data
-#     if("GUESS" in data):
-#       print "GUESS"
-#       index = data.index(":") + 1
-#       number = data[index:]
-#       game.check_guess(number)
-#     elif("WIN" in data):
-#       print "WIN"
-#       still_playing = False
-#     else:
-#       print data
-#       message = "GUESS:" + str(guess.new())
-#       sock.sendto(message, (HOST, PORT['out']))
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.sendto(message, (HOST, PORT_OUT))
+
+
+while (still_playing):
+
+  print "still_playing"
+
+  data, addr = sock.recvfrom(1024)
+  print '******************************'
+  print "received message:", data
+  print '******************************'
+
+  if("GUESS" in data):
+    print "GUESS"
+    index = data.index(":") + 1
+    number = data[index:]
+    response = game.check_guess(number)
+    if("WIN" in response):
+      message = "WIN"
+      s.sendto(message, (HOST, PORT_OUT))
+      print "YOU LOST. Goodbye."
+      break
+    else:
+      message = response
+      s.sendto(message, (HOST, PORT_OUT))
+  elif("WIN" in data):
+    print "YOU WIN"
+    still_playing = False
+    break
+  else:
+    print "xByC: " + data
+    message = "GUESS:" + str(guess.new())
+    print "Message: " + message
+    s.sendto(message, (HOST, PORT_OUT))
+    print "Message Sent -------------------------"
+

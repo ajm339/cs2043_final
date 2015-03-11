@@ -47,11 +47,7 @@ class Guess:
     digits = '123456789'
     size = 4
     guess = ''.join(random.sample(digits,size))
-    if guess in self.past_guesses:
-      return self.new()
-    else:
-      self.past_guesses.add(guess)
-      return guess
+    return guess
 
 
 print "Starting Game"

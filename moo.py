@@ -58,21 +58,17 @@ print "Starting Game"
 print '===================================='
 print ''
 print ''
-PORT = {}
+
 if (len(sys.argv) == 4):
   player_number = sys.argv[1]
   PORT_IN = int(sys.argv[2])
   PORT_OUT = int(sys.argv[3])
 
-
 game = BullsAndCows(player_number)
 guess = Guess()
 
-
-
 still_playing = True
 HOST = ''
-
 
 message = "GUESS:" + guess.new()
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -80,7 +76,6 @@ sock.bind((HOST, PORT_IN))
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.sendto(message, (HOST, PORT_OUT))
-
 
 while (still_playing):
 
